@@ -5,9 +5,17 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.exmaple.tablayout.R
+import com.exmaple.tablayout.adapter.RecyclerViewAdapter
 import com.exmaple.tablayout.databinding.FragmentTwoBinding
+import com.exmaple.tablayout.networking.API
 import com.squareup.picasso.Picasso
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 class FragmentTwo : Fragment() {
@@ -19,12 +27,26 @@ class FragmentTwo : Fragment() {
     ): View  {
       binding = FragmentTwoBinding.inflate(inflater)
 
-        Picasso.get()
-            .load("https://cdn.britannica.com/39/7139-050-A88818BB/Himalayan-chocolate-point.jpg")
-            .into(binding.imageView2)
-
+        initRecyclerView()
         return binding.root
     }
 
 
+    private fun initRecyclerView() {
+
+        val layoutManager = LinearLayoutManager(context)
+        binding.canadaRecyclerView.layoutManager = layoutManager
+
+        GlobalScope.launch {
+
+                val data =  API.apiService.getDataFromApi().body()
+                withContext(Dispatchers.Main){
+                     binding.canadaRecyclerView.adapter= RecyclerViewAdapter(data!!,2)
+                }
+
+        }
+
+
+
+    }
 }

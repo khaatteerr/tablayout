@@ -25,6 +25,6 @@ object API {
 interface RetroService {
 
      @GET("/khater2")
-      suspend fun getDataFromApi():    CountryData
+      suspend fun getDataFromApi():  Response<CountryData>
 
 }

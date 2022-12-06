@@ -1,7 +1,6 @@
 package com.exmaple.tablayout.ui.fragments
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -10,14 +9,8 @@ import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.exmaple.tablayout.adapter.RecyclerViewAdapter
 import com.exmaple.tablayout.databinding.FragmentOneBinding
-import com.exmaple.tablayout.model.CountryData
 import com.exmaple.tablayout.networking.API
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import kotlinx.coroutines.*
 
 
 class FragmentOne : Fragment() {
@@ -44,10 +37,17 @@ class FragmentOne : Fragment() {
 
         GlobalScope.launch {
             try {
-              val data =  API.apiService.getDataFromApi()
-                Toast.makeText(requireActivity(),"${ API.apiService.getDataFromApi()}",Toast.LENGTH_LONG).show()
+              val data =  API.apiService.getDataFromApi().body()
+                withContext(Dispatchers.Main){
+                    Toast.makeText(requireActivity(),"${ API.apiService.getDataFromApi()}",Toast.LENGTH_LONG).show()
+                    binding.egyptRecyclerView.adapter=RecyclerViewAdapter(data!!,1)
+                }
             }catch (e:java.lang.Exception){
-                Toast.makeText(requireActivity(),"${e.message}",Toast.LENGTH_LONG).show()
+
+                withContext(Dispatchers.Main){
+                    Toast.makeText(requireActivity(),"${e.message}",Toast.LENGTH_LONG).show()
+
+                }
 
             }
 
